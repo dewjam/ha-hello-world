@@ -1,6 +1,6 @@
 FROM ubuntu:latest
 
-RUN apt-get update && apt-get upgrade
+RUN apt-get -y update && apt-get -y upgrade
 COPY bin/ha-hello-world .
 RUN chmod +x ha-hello-world
 
