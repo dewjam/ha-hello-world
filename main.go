@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"os"
 
+	"net/http"
+
 	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	log "github.com/sirupsen/logrus"
-	"net/http"
 )
 
 var port string = "8080"
@@ -22,7 +23,6 @@ var requestCounter = promauto.NewCounterVec(
 )
 
 func init() {
-	log.SetFormatter(&log.JSONFormatter{})
 	log.SetOutput(os.Stdout)
 	log.SetLevel(log.InfoLevel)
 }
@@ -35,7 +35,7 @@ func main() {
 	r.Use(logHandler)
 
 	srv := &http.Server{
-		Addr:    fmt.Sprintf("127.0.0.1:%s", port),
+		Addr:    fmt.Sprintf("0.0.0.0:%s", port),
 		Handler: r,
 	}
 
@@ -62,7 +62,7 @@ func logHandler(h http.Handler) http.Handler {
 			"ContentLength": r.ContentLength,
 			"RemoteAddr":    r.RemoteAddr,
 			"StatusCode":    "200",
-		}).Info("Request")
+		}).Info("Request Received")
 
 		requestCounter.With(prometheus.Labels{
 			"code": "200",

@@ -1,24 +1,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
   labels:
     app: hello-world
   name: hello-world
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: hello-world
-  strategy: {}
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: hello-world
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '8080'
     spec:
       containers:
-      - image: ha-hello-world
+      - image: 742886329884.dkr.ecr.us-east-2.amazonaws.com/ha-hello-world-hahelloworld43f5b324-ypjmfezegfgw:latest
         name: ha-hello-world
         resources: {}
-status: {}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+        ports:
+        - containerPort: 8080
+
